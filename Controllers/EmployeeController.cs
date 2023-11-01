@@ -49,7 +49,7 @@ namespace WorkSpaceBooking.Controllers
                         command.Parameters.AddWithValue("@Position", employee.Position);
                         command.Parameters.AddWithValue("@Email", employee.Email);
                         command.Parameters.AddWithValue("@Password", employee.Password);
-                        //command.Parameters.AddWithValue("@Phone", employee.Phone);
+                        command.Parameters.AddWithValue("@Phone", employee.Phone);
 
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
@@ -92,8 +92,27 @@ namespace WorkSpaceBooking.Controllers
                             if (reader.HasRows)
                             {
                                 await reader.ReadAsync();
+
                                 // Read the result from the database and map it to an Employee object
+                                Employee employee = new Employee
+                                {
+                                    Id = (int)reader["Id"],
+                                    FirstName = reader["FirstName"].ToString().Trim(),
+                                    LastName = reader["LastName"].ToString().Trim(),
+                                    Gender = reader["Gender"].ToString().Trim(),
+                                    Dob = (DateTime)reader["Dob"],
+                                    Address = reader["Address"].ToString().Trim(),
+                                    Pincode = (int)reader["Pincode"],
+                                    Aadhar = reader["Aadhar"].ToString(),
+                                    Department = reader["Department"].ToString().Trim(),
+                                    Position = reader["Position"].ToString().Trim(),
+                                    Email = reader["Email"].ToString().Trim(),
+                                    Password = reader["Password"].ToString().Trim(),
+                                    Phone = reader["Phone"].ToString()
+                                };
+
                                 // Return the employee data
+                                return Ok(employee);
                             }
                             else
                             {
@@ -138,7 +157,7 @@ namespace WorkSpaceBooking.Controllers
                         command.Parameters.AddWithValue("@Position", employee.Position);
                         command.Parameters.AddWithValue("@Email", employee.Email);
                         command.Parameters.AddWithValue("@Password", employee.Password);
-                        //command.Parameters.AddWithValue("@Phone", employee.Phone);
+                        command.Parameters.AddWithValue("@Phone", employee.Phone);
 
                         int rowsAffected = await command.ExecuteNonQueryAsync();
 

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Data;
 using WorkSpaceBooking1.Model;
 using Microsoft.Extensions.Configuration;
+using WorkSpaceBooking.Models;
 
 namespace WorkSpaceBooking1.Controllers
 {
@@ -60,5 +61,50 @@ namespace WorkSpaceBooking1.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("upcomingBookingsForUser/{employeeId}")]
+        public IActionResult GetUpcomingBookingsForUser(int employeeId)
+        {
+            string connectionString = _configuration.GetConnectionString("YourDatabaseConnection");
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand("upcomingBookingsForuser", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(new SqlParameter("@employeeid", SqlDbType.Int) { Value = employeeId });
+
+                    List<BookingDetails> bookings = new List<BookingDetails>();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            BookingDetails booking = new BookingDetails
+                            {
+                                BookingId = reader["BookingId"] as int? ?? 0,
+                                BookingDate = reader["BookingDate"] as DateTime? ?? DateTime.MinValue,
+                                BookingTime = reader["BookingTime"] as string,
+                                BookedRoom = reader["BookedRoom"] as string,
+                                EmployeeId = reader["EmployeeId"] as int? ?? 0,
+                                EmployeeName = reader["EmployeeName"] as string,
+                                BookedWorkspace = reader["bookedWorkspace"] as string,
+                                Status = reader["Status"] as string,
+
+                            };
+
+
+
+                            bookings.Add(booking);
+                        }
+                    }
+
+                    return Ok(bookings);
+                }
+            }
+        }
     }
 }
+

@@ -4,34 +4,32 @@ using System.Data.SqlClient;
 using System.Data;
 using WorkSpaceBooking.Models;
 using System.Collections.Generic;
-
-using System.Configuration;
+using Microsoft.Extensions.Configuration;
 using WorkSpaceBooking1.Model;
 
-Model = FetchEmployeeIdsDTO
 namespace WorkSpaceBooking1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class FetchEmployeeIdsAndNamesController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
 
-
-
-        public IEnumerable<Employee> Get()
+        public FetchEmployeeIdsAndNamesController(IConfiguration configuration)
         {
-            List<Employee> employees = new List<Employee>();
+            _configuration = configuration;
+        }
 
-            // Define your connection string
-            string connectionString = ConfigurationManager.ConnectionStrings["YourConnectionString"].ToString();
+        [HttpGet]
+        public IEnumerable<FetchEmployeeIdsDTO> Get()
+        {
+            List<FetchEmployeeIdsDTO> employees = new List<FetchEmployeeIdsDTO>();
 
-            // Create a connection to the database
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("YourDatabaseConnection")))
             {
                 connection.Open();
 
-                // Create a command to call the stored procedure
-                using (SqlCommand command = new SqlCommand("GetEmployeeIdsAndNames", connection))
+                using (SqlCommand command = new SqlCommand("GetEmployeeIds", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
@@ -39,7 +37,7 @@ namespace WorkSpaceBooking1.Controllers
                     {
                         while (reader.Read())
                         {
-                            employees.Add(new Employee
+                            employees.Add(new FetchEmployeeIdsDTO
                             {
                                 Id = (int)reader["Id"],
                                 FullName = reader["FullName"].ToString()
