@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
 using System.Data;
-using WorkSpaceBooking1.Model;
-using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
 using WorkSpaceBooking.Models;
+using WorkSpaceBooking1.Model;
 
 namespace WorkSpaceBooking1.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UserBookingStatus : ControllerBase
@@ -61,6 +61,7 @@ namespace WorkSpaceBooking1.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [Authorize(Policy = "UserPolicy")]
         [HttpGet("upcomingBookingsForUser/{employeeId}")]
         public IActionResult GetUpcomingBookingsForUser(int employeeId)
         {

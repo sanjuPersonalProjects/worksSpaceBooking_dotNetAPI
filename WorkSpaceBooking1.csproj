@@ -13,4 +13,12 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Charts\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Repository\" />
+    <Folder Include="UserModule\Controllers\" />
+    <Folder Include="UserModule\Models\" />
+  </ItemGroup>
+
 </Project>

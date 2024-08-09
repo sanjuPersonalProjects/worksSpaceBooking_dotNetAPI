@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-
+using System.Data.SqlClient;
 using WorkSpaceBooking.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace WorkSpaceBooking.Controllers
 {
@@ -62,7 +55,8 @@ namespace WorkSpaceBooking.Controllers
                     }
                 }
 
-                return Ok("Employee created successfully!");
+
+                return Ok(new { success = true, message = "Employee created successfully!" });
             }
             catch (Exception ex)
             {

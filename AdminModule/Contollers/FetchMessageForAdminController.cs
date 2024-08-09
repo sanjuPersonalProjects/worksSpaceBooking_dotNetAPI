@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using WorkSpaceBooking1.Model;
+using WorkSpaceBooking1.AdminModule.Models;
 
-namespace WorkSpaceBooking1.Controllers
+namespace WorkSpaceBooking1.AdminModule.Contollers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -22,7 +19,7 @@ namespace WorkSpaceBooking1.Controllers
         [HttpGet("dateRange")]
         public ActionResult<List<FetchMessagesForAdmin>> GetMessagesByDateRange(DateTime startDate, DateTime endDate)
         {
-            List<FetchMessagesForAdmin > messages = new List<FetchMessagesForAdmin>();
+            List<FetchMessagesForAdmin> messages = new List<FetchMessagesForAdmin>();
 
             string connectionString = _configuration.GetConnectionString("YourDatabaseConnection");
 

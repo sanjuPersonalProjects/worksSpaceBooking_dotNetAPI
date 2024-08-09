@@ -4,10 +4,12 @@ using System.Data;
 using System.Data.SqlClient;
 using WorkSpaceBooking1.Model;
 
-namespace WorkSpaceBooking1.Controllers
+namespace WorkSpaceBooking1.AdminModule.Contollers
 {
+
     [Route("api/[controller]")]
     [ApiController]
+
     public class GraphController : ControllerBase
     {
         private readonly IConfiguration _configuration;

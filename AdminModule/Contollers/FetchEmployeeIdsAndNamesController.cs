@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Data;
-using WorkSpaceBooking.Models;
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
-using WorkSpaceBooking1.Model;
+using System.Data.SqlClient;
+using WorkSpaceBooking1.AdminModule.Models;
 
-namespace WorkSpaceBooking1.Controllers
+namespace WorkSpaceBooking1.AdminModule.Contollers
 {
     [Route("api/[controller]")]
     [ApiController]

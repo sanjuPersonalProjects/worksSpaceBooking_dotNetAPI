@@ -1,6 +1,6 @@
 ﻿namespace WorkSpaceBooking1.Model
 {
-     class BookingCountDto
+    class BookingCountDto
     {
         public DateTime BookingDate { get; set; }
         public int MorningCount { get; set; }

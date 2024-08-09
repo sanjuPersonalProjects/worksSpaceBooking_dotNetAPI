@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using System.Data.SqlClient;
 using WorkSpaceBooking1.Model;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 
-namespace WorkSpaceBooking1.Controllers
+namespace WorkSpaceBooking1.SharedModule.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -21,7 +17,7 @@ namespace WorkSpaceBooking1.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetBookingData( int? employeeId , string? filterRoom , string? filterWorkspace , DateTime targetDate)
+        public IActionResult GetBookingData(int? employeeId, string? filterRoom, string? filterWorkspace, DateTime targetDate)
         {
             try
             {

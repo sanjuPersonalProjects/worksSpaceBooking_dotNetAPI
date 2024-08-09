@@ -1,4 +1,4 @@
-﻿namespace WorkSpaceBooking1.Model
+﻿namespace WorkSpaceBooking1.AdminModule.Models
 {
     public class FetchEmployeeIdsDTO
     {

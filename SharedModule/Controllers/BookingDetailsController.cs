@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using WorkSpaceBooking.Models;
 
 
-namespace WorkSpaceBooking.Controllers
+namespace WorkSpaceBooking1.SharedModule.Controllers
 {
     [ApiController]
     [Route("api/bookingdetails")]
@@ -43,7 +40,7 @@ namespace WorkSpaceBooking.Controllers
 
                         // Execute the command to interact with the database
                         command.ExecuteNonQuery();
-                        return Ok("Booking details created successfully.");
+                        return Ok(new { success = true, message = "Booking details created successfully." });
                     }
                 }
             }
@@ -204,7 +201,7 @@ namespace WorkSpaceBooking.Controllers
                 return BadRequest($"Error getting booking details: {ex.Message}");
             }
         }
-        
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBookingDetails(int id, BookingDetails bookingDetails)
