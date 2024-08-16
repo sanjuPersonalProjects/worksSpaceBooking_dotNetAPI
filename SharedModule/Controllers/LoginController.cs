@@ -60,12 +60,12 @@ namespace WorkSpaceBooking1.SharedModule.Controllers
                                 // Dynamic addition of claims based on conditions
                                 if (isAdmin)
                                 {
-                                    claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                                    claims.Add(new Claim("role", "Admin"));
 
                                 }
                                 else
                                 {
-                                    claims.Add(new Claim(ClaimTypes.Role, "User"));
+                                    claims.Add(new Claim("role", "User"));
 
                                 }
 

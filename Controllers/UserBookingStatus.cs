@@ -7,7 +7,7 @@ using WorkSpaceBooking1.Model;
 
 namespace WorkSpaceBooking1.Controllers
 {
-    
+   
     [Route("api/[controller]")]
     [ApiController]
     public class UserBookingStatus : ControllerBase
@@ -18,7 +18,7 @@ namespace WorkSpaceBooking1.Controllers
         {
             _configuration = configuration;
         }
-
+        
         [HttpGet]
         public IActionResult GetBookingData(DateTime bookingDate, string bookingTime, string bookedRoom, int? employeeId = null)
         {
