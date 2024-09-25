@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using WorkSpaceBooking1.AdminModule.Models;
 
-namespace WorkSpaceBooking1.AdminModule.Contollers
+namespace WorkSpaceBooking1.AdminModule.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -17,37 +17,44 @@ namespace WorkSpaceBooking1.AdminModule.Contollers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBookingDetailsWithFilters(DateTime startDate, DateTime endDate, string? roomFilter = null, string? workspaceFilter = null, int? employeeIdFilter = null, string? bookingTimeFilter = null, string? statusFilter = null, string? workspace = null)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<bookingDetailsWithFiltersForAdminDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetBookingDetailsWithFilters(
+            DateTime startDate, DateTime endDate, string? roomFilter = null,
+            string? workspaceFilter = null, int? employeeIdFilter = null,
+            string? bookingTimeFilter = null, string? statusFilter = null)
         {
             try
             {
                 string connectionString = _configuration.GetConnectionString("YourDatabaseConnection");
+                string storedProcedure = _configuration["StoredProcedures:Admin:GetBookingHistoryForAdmin"];
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand command = new SqlCommand("GetBookingDetailsByDateRangeAndFilters", connection))
+                    await connection.OpenAsync(); // Asynchronous connection opening
+
+                    using (SqlCommand command = new SqlCommand(storedProcedure, connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        command.Parameters.Add(new SqlParameter("@StartDate", SqlDbType.Date) { Value = startDate });
-                        command.Parameters.Add(new SqlParameter("@EndDate", SqlDbType.Date) { Value = endDate });
-                        command.Parameters.Add(new SqlParameter("@RoomFilter", SqlDbType.NVarChar, 50) { Value = roomFilter });
-                        command.Parameters.Add(new SqlParameter("@WorkspaceFilter", SqlDbType.NVarChar, 50) { Value = workspaceFilter });
-                        command.Parameters.Add(new SqlParameter("@EmployeeIdFilter", SqlDbType.Int) { Value = employeeIdFilter });
-                        command.Parameters.Add(new SqlParameter("@BookingTimeFilter", SqlDbType.NVarChar, 50) { Value = bookingTimeFilter });
-                        command.Parameters.Add(new SqlParameter("@StatusFilter", SqlDbType.NVarChar, 50) { Value = statusFilter });
-
-                        await connection.OpenAsync();
+                        // Add parameters and handle nulls using DBNull.Value
+                        command.Parameters.AddWithValue("@StartDate", startDate);
+                        command.Parameters.AddWithValue("@EndDate", endDate);
+                        command.Parameters.AddWithValue("@RoomFilter", (object?)roomFilter ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@WorkspaceFilter", (object?)workspaceFilter ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@EmployeeIdFilter", (object?)employeeIdFilter ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@BookingTimeFilter", (object?)bookingTimeFilter ?? DBNull.Value);
+                        command.Parameters.AddWithValue("@StatusFilter", (object?)statusFilter ?? DBNull.Value);
 
                         using (var reader = await command.ExecuteReaderAsync())
                         {
                             var bookings = new List<bookingDetailsWithFiltersForAdminDTO>();
 
-                            while (reader.Read())
+                            while (await reader.ReadAsync())
                             {
                                 var booking = new bookingDetailsWithFiltersForAdminDTO
                                 {
-
                                     BookingDate = reader.GetDateTime(1),
                                     BookingTime = reader.GetString(2),
                                     BookedRoom = reader.GetString(3),
