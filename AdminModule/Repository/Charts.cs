@@ -3,6 +3,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using WorkSpaceBooking1.AdminModule.Dtos;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace WorkSpaceBooking1.AdminModule.Repository
 {
@@ -14,12 +16,12 @@ namespace WorkSpaceBooking1.AdminModule.Repository
     public class ChartsRepository : IChartsRepository
     {
         private readonly string _connectionString;
+        private readonly ILogger<ChartsRepository> _logger;
 
-        
-
-        public ChartsRepository(IConfiguration configuration)
+        public ChartsRepository(IConfiguration configuration, ILogger<ChartsRepository> logger)
         {
             _connectionString = configuration.GetConnectionString("YourDatabaseConnection");
+            _logger = logger;
         }
 
         public async Task<BookingByGenderDto> GetBookingsByGenderChartAsync(DateOnly date)
@@ -28,6 +30,8 @@ namespace WorkSpaceBooking1.AdminModule.Repository
 
             try
             {
+                _logger.LogInformation("Getting bookings by gender chart for date: {Date}", date);
+
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     using (var command = new SqlCommand("usp_GetBookingsByGenderGraph", connection))
@@ -37,6 +41,7 @@ namespace WorkSpaceBooking1.AdminModule.Repository
                         command.Parameters.AddWithValue("@Date", dateTime);
 
                         await connection.OpenAsync();
+                        _logger.LogInformation("Database connection opened successfully.");
 
                         using (var reader = await command.ExecuteReaderAsync())
                         {
@@ -52,14 +57,12 @@ namespace WorkSpaceBooking1.AdminModule.Repository
                         }
                     }
                 }
+
+                _logger.LogInformation("Successfully retrieved bookings by gender chart for date: {Date}", date);
             }
             catch (Exception ex)
             {
-                // Log the exception (e.g., to a file or monitoring system)
-                // For example:
-                Console.WriteLine($"An error occurred: {ex.Message}");
-
-                // Consider rethrowing or handling the exception as needed
+                _logger.LogError(ex, "An error occurred while retrieving bookings by gender chart for date: {Date}", date);
                 throw;
             }
 

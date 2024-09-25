@@ -15,6 +15,8 @@ using Serilog.Sinks.MSSqlServer;
 using System.Data;
 using WorkSpaceBooking1.Middlewares;
 using Serilog.Formatting.Compact;
+using static Serilog.Sinks.MSSqlServer.ColumnOptions;
+using System.Collections.ObjectModel;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -71,13 +73,18 @@ builder.Services.AddCors(options =>
                .AllowAnyMethod()
                .AllowAnyHeader());
 });
-// Example of creating a logger configuration
 
-     // Adjust parameters as necessary
     
 
 builder.Services.AddTransient<BookingController>();
 builder.Services.AddTransient<BookingDTO>();
+
+var columnOptions = new ColumnOptions();
+//  don't need XML data
+columnOptions.Store.Remove(StandardColumn.Properties);
+
+//  do want JSON data and OpenTelemetry
+columnOptions.Store.Add(StandardColumn.LogEvent);
 // Configure Serilog (moved up)
 try
 {
@@ -88,10 +95,14 @@ try
             sinkOptions: new MSSqlServerSinkOptions
             {
                 TableName = "Logs",
+                AutoCreateSqlTable = false,
                 
             },
             restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information,
-            logEventFormatter: new CompactJsonFormatter()
+            logEventFormatter: new CompactJsonFormatter(),
+            columnOptions: columnOptions
+
+
         )
         .CreateLogger();
 
@@ -111,8 +122,7 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 Log.Information("Application starting up");
-Log.Information("This is a test log message!");
-Log.Information("This is a test log with properties.", new { UserId = 123, Action = "Test" });
+
 
 
 
