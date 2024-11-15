@@ -20,6 +20,7 @@ namespace WorkSpaceBooking1.AdminModule.Contollers
         }
 
         [HttpGet]
+        [HttpGet]
         public IActionResult GetBookedCountsByDateRange(DateTime startDate, DateTime endDate)
         {
             List<BookingCountDto> bookingCounts = new List<BookingCountDto>();
@@ -46,8 +47,8 @@ namespace WorkSpaceBooking1.AdminModule.Contollers
                             BookingCountDto bookingCount = new BookingCountDto
                             {
                                 BookingDate = (DateTime)reader["bookingDate"],
-                                MorningCount = (int)reader["MorningCount"],
-                                AfternoonCount = (int)reader["AfternoonCount"]
+                                MorningCount = reader.IsDBNull(reader.GetOrdinal("MorningCount")) ? 0 : (int)reader["MorningCount"],
+                                AfternoonCount = reader.IsDBNull(reader.GetOrdinal("AfternoonCount")) ? 0 : (int)reader["AfternoonCount"]
                             };
 
                             bookingCounts.Add(bookingCount);
@@ -64,5 +65,6 @@ namespace WorkSpaceBooking1.AdminModule.Contollers
 
             return Ok(bookingCounts);
         }
+
     }
 }
