@@ -13,7 +13,7 @@ namespace WorkSpaceBooking1.Controllers
 
         public ContactAdminController(IConfiguration configuration)
         {
-            _configuration = configuration;
+            _configuration = configuration ;
         }
 
         [HttpPost]
